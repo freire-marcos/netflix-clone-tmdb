@@ -1,12 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MovieRow.css";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 export default function MovieRow({ title, items }) {
+  const [scrooX, setScrollX] = useState(0);
+  const handleLeftArrow = () => {
+    let x = scrooX + Math.round(window.innerWidth / 2);
+    if(x > 0) {
+      x = 0
+    }
+    setScrollX(x);
+  }
+  const handleRightArrow = () => {
+    let x = scrooX - Math.round(window.innerWidth / 2);
+    let listW = items.results.length * 150
+    if ((window.innerWidth - listW) > x) {
+      x = (window.innerWidth - listW) - 60
+    }
+    setScrollX(x)
+  }
   return (
     <div className="movieRow">
       <h2>{title}</h2>
+      <div className="movieRow--left" onClick={handleLeftArrow}>
+        <NavigateBeforeIcon style={{fontSize: 50}} />
+      </div>
+      <div className="movieRow--right" onClick={handleRightArrow}>
+        <NavigateNextIcon style={{fontSize: 50}} />
+      </div>
       <div className="movieRow--listarea">
-        <div className="movieRow--list">
+        <div className="movieRow--list" style={{
+          marginLeft: scrooX,
+          width: items.results.length * 150
+        }}>
           {items.results.length > 0 &&
             items.results.map((item, key) => (
               <div key={key} className="movieRow--item">
@@ -17,7 +44,7 @@ export default function MovieRow({ title, items }) {
               </div>
             ))}
         </div>
-      </div>
+      </div>      
     </div>
   );
 }
